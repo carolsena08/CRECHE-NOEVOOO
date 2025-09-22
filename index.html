@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Financeiro - Gestão de Creche</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a8d5ba;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #82c29b;
+        }
+    </style>
+    <script>
+        // Custom color palette from the image for Tailwind CSS
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-green-light': '#E2F5EA',
+                        'brand-green-medium': '#A8D5BA',
+                        'brand-green-dark': '#3D8C5B',
+                        'brand-text': '#2E6B46',
+                        'brand-gray': '#F7F8FA',
+                        'brand-gray-text': '#8A8A8A',
+                        'brand-red': '#FF6B6B',
+                        'brand-blue': '#4A90E2',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-gray text-brand-gray-text">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Main Content -->
+        <main class="flex-1 p-4 md:p-8">
+            <header class="flex justify-between items-center mb-8">
+                <div class="flex items-center gap-4">
+                     <button class="text-brand-green-dark p-2 rounded-full hover:bg-brand-green-light">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-brand-text">Painel FINANCEIRO</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="current-date" class="text-sm font-medium text-brand-text hidden sm:block"></span>
+                    <img src="https://placehold.co/40x40/A8D5BA/2E6B46?text=A" alt="Avatar do Usuário" class="w-10 h-10 rounded-full">
+                </div>
+            </header>
+
+            <!-- Navigation Tabs -->
+            <nav class="mb-8">
+                <ul class="flex items-center gap-2 md:gap-4 border-b border-gray-200">
+                    <li><button id="btn-dashboard" class="nav-tab active">Dashboard</button></li>
+                    <li><button id="btn-relatorios" class="nav-tab">Relatórios</button></li>
+                    <li><button id="btn-alunos" class="nav-tab">Alunos</button></li>
+                </ul>
+            </nav>
+
+            <!-- Dynamic Content Area -->
+            <div id="content-area">
+                <!-- Content will be loaded here by JavaScript -->
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal for adding new student/payment -->
+    <div id="add-aluno-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-brand-text">Adicionar Novo Aluno/Cliente</h3>
+                <button id="close-add-aluno-modal" class="text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+            <form id="add-student-form">
+                <div class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Nome Completo</label>
+                        <input type="text" id="name" name="name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                    <div>
+                        <label for="cpfCnpj" class="block text-sm font-medium text-gray-700">CPF/CNPJ</label>
+                        <input type="text" id="cpfCnpj" name="cpfCnpj" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                     <div>
+                        <label for="value" class="block text-sm font-medium text-gray-700">Valor da Mensalidade</label>
+                        <input type="number" step="0.01" id="value" name="value" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                    <div>
+                        <label for="dueDate" class="block text-sm font-medium text-gray-700">Data de Vencimento</label>
+                        <input type="date" id="dueDate" name="dueDate" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end gap-4">
+                    <button type="button" id="cancel-add-aluno-modal" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">Cancelar</button>
+                    <button type="submit" class="bg-brand-green-dark text-white px-4 py-2 rounded-md hover:bg-brand-text">Salvar e Gerar Cobrança</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- NOVO MODAL: Modal para adicionar nova receita -->
+    <div id="nova-receita-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-brand-text">Nova Receita</h3>
+                <button id="close-nova-receita-modal" class="text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+            <form id="add-revenue-form">
+                <div class="space-y-4">
+                    <div>
+                        <label for="customerId" class="block text-sm font-medium text-gray-700">Selecione o Aluno</label>
+                        <select id="customerId" name="customerId" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                           <!-- Opções de alunos serão carregadas aqui -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700">Descrição</label>
+                        <input type="text" id="description" name="description" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                     <div>
+                        <label for="revenue-value" class="block text-sm font-medium text-gray-700">Valor</label>
+                        <input type="number" step="0.01" id="revenue-value" name="value" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                    <div>
+                        <label for="revenue-dueDate" class="block text-sm font-medium text-gray-700">Data</label>
+                        <input type="date" id="revenue-dueDate" name="dueDate" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                    <div>
+                         <label for="category" class="block text-sm font-medium text-gray-700">Categoria</label>
+                         <select id="category" name="category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                            <option value="Matrícula">Matrícula</option>
+                            <option value="Taxa de Material">Taxa de Material</option>
+                            <option value="Evento">Evento</option>
+                            <option value="Outros">Outros</option>
+                         </select>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end gap-4">
+                    <button type="button" id="cancel-nova-receita-modal" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">Cancelar</button>
+                    <button type="submit" class="bg-brand-green-dark text-white px-4 py-2 rounded-md hover:bg-brand-text">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentArea = document.getElementById('content-area');
+            const navTabs = document.querySelectorAll('.nav-tab');
+            
+            // Modais e formulários
+            const addAlunoModal = document.getElementById('add-aluno-modal');
+            const addStudentForm = document.getElementById('add-student-form');
+            const novaReceitaModal = document.getElementById('nova-receita-modal');
+            const addRevenueForm = document.getElementById('add-revenue-form');
+
+            const dateEl = document.getElementById('current-date');
+            if(dateEl) {
+                dateEl.textContent = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
+            }
+            
+            const API_URL = 'http://localhost:3000/api';
+
+            // --- Templates ---
+            
+            const dashboardTemplate = `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 class="text-sm font-medium text-brand-gray-text">TOTAL RECEITAS</h4>
+                        <p id="total-receitas-dashboard" class="text-3xl font-bold text-brand-text mt-2">...</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 class="text-sm font-medium text-brand-gray-text">LUCRO LÍQUIDO</h4>
+                        <p class="text-3xl font-bold text-brand-text mt-2">R$3.000,00</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 class="text-sm font-medium text-brand-gray-text">TOTAL ALUNOS</h4>
+                        <p id="total-alunos-dashboard" class="text-3xl font-bold text-brand-text mt-2">...</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 class="text-sm font-medium text-brand-gray-text">TOTAL DESPESAS</h4>
+                        <p class="text-3xl font-bold text-brand-red mt-2">R$5.000,00</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-brand-text mb-4">Evolução Financeira</h3>
+                        <canvas id="evolutionChart"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-brand-text mb-4">Salários 60%</h3>
+                        <canvas id="expensesChart"></canvas>
+                    </div>
+                </div>
+            `;
+
+            const relatoriosTemplate = `
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-brand-text text-lg">Relatório de Receitas</h3>
+                        <button id="btn-nova-receita" class="bg-brand-green-light text-brand-green-dark font-semibold px-4 py-2 rounded-lg text-sm hover:bg-brand-green-medium">Nova Receita</button>
+                    </div>
+                    <div id="receitas-table" class="overflow-x-auto"></div>
+                </div>
+            `;
+            
+            const alunosTemplate = `
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                     <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-brand-text text-lg">Gestão de Alunos</h3>
+                        <button id="btn-add-aluno" class="bg-brand-green-dark text-white font-semibold px-4 py-2 rounded-lg text-sm hover:bg-brand-text">Adicionar Aluno</button>
+                    </div>
+                     <div id="alunos-table" class="overflow-x-auto"></div>
+                </div>
+            `;
+
+            // --- Funções da API ---
+
+            async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+                try {
+                    const response = await fetch(url, options);
+                    const contentType = response.headers.get("content-type");
+
+                    if (!response.ok) {
+                        let errorMessage;
+                        if (contentType && contentType.includes("application/json")) {
+                            const errorData = await response.json();
+                            errorMessage = errorData.message || `Erro do servidor: ${response.status}`;
+                        } else {
+                            errorMessage = `O servidor respondeu com um erro inesperado (status: ${response.status}). Verifique se o backend está rodando.`;
+                        }
+                        throw new Error(errorMessage);
+                    }
+
+                    if (contentType && contentType.includes("application/json")) {
+                        return await response.json();
+                    } else {
+                        throw new Error("A resposta do servidor não é um JSON válido.");
+                    }
+                } catch (error) {
+                    if (retries > 0) {
+                        console.warn(`Tentando novamente... ${retries - 1} tentativas restantes.`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return fetchWithRetry(url, options, retries - 1, delay * 2);
+                    } else {
+                        console.error("Falha na requisição:", error);
+                        alert(error.message); 
+                        return null;
+                    }
+                }
+            }
+
+            async function getStudentStatus() {
+                const data = await fetchWithRetry(`${API_URL}/students-status`);
+                return data ? data.students : [];
+            }
+            
+            async function createCustomerAndPayment(studentData) {
+                return fetchWithRetry(`${API_URL}/create-customer-and-payment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(studentData),
+                });
+            }
+
+            async function getRevenueReport() {
+                const data = await fetchWithRetry(`${API_URL}/revenue-report`);
+                return data ? data.report : [];
+            }
+
+            async function createRevenue(revenueData) {
+                return fetchWithRetry(`${API_URL}/create-revenue`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(revenueData),
+                });
+            }
+
+
+            // --- Funções de Renderização ---
+
+            function renderAlunosTable(alunos) {
+                const tableContainer = document.getElementById('alunos-table');
+                if (!tableContainer) return;
+                
+                let tableHTML = `
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-brand-gray-text border-b">
+                            <tr>
+                                <th class="p-3">NOME</th>
+                                <th class="p-3 hidden sm:table-cell">MENSALIDADE</th>
+                                <th class="p-3">VENCIMENTO</th>
+                                <th class="p-3">STATUS</th>
+                                <th class="p-3">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                if (alunos.length === 0) {
+                    tableHTML += `<tr><td colspan="5" class="p-4 text-center">Nenhum aluno encontrado.</td></tr>`;
+                } else {
+                    alunos.forEach(aluno => {
+                        const statusClass = aluno.status === 'ADIMPLENTE' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+                        const formattedDate = aluno.nextDueDate === 'Sem cobranças' ? 'N/A' : new Date(aluno.nextDueDate).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+                        const formattedFee = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(aluno.monthlyFee || 0);
+                        
+                        tableHTML += `
+                            <tr class="border-b hover:bg-brand-gray">
+                                <td class="p-3 font-semibold text-brand-text">${aluno.name}</td>
+                                <td class="p-3 hidden sm:table-cell">${formattedFee}</td>
+                                <td class="p-3">${formattedDate}</td>
+                                <td class="p-3"><span class="px-2 py-1 rounded-full text-xs font-medium ${statusClass}">${aluno.status}</span></td>
+                                <td class="p-3 text-brand-green-dark font-bold">...</td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                tableHTML += `</tbody></table>`;
+                tableContainer.innerHTML = tableHTML;
+            }
+
+            function renderRelatoriosTable(payments) {
+                const tableContainer = document.getElementById('receitas-table');
+                if (!tableContainer) return;
+
+                let tableHTML = `
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-brand-gray-text border-b">
+                            <tr>
+                                <th class="p-3">ALUNO</th>
+                                <th class="p-3">VALOR PAGO</th>
+                                <th class="p-3">DATA DO PAGAMENTO</th>
+                                <th class="p-3">RECIBO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                if (payments.length === 0) {
+                    tableHTML += `<tr><td colspan="4" class="p-4 text-center">Nenhum pagamento recebido encontrado.</td></tr>`;
+                } else {
+                    payments.forEach(payment => {
+                        const formattedValue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(payment.value || 0);
+                        const formattedDate = new Date(payment.paymentDate).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+                        
+                        tableHTML += `
+                            <tr class="border-b hover:bg-brand-gray">
+                                <td class="p-3 font-semibold text-brand-text">${payment.customerName}</td>
+                                <td class="p-3 text-brand-green-dark font-medium">${formattedValue}</td>
+                                <td class="p-3">${formattedDate}</td>
+                                <td class="p-3">
+                                    <a href="${payment.invoiceUrl}" target="_blank" class="text-brand-blue hover:underline">Ver Recibo</a>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+                tableHTML += `</tbody></table>`;
+                tableContainer.innerHTML = tableHTML;
+            }
+
+
+            async function renderDashboard() {
+                contentArea.innerHTML = dashboardTemplate;
+
+                const alunos = await getStudentStatus();
+                if (document.getElementById('total-alunos-dashboard')) {
+                    document.getElementById('total-alunos-dashboard').textContent = alunos.length;
+                }
+
+                const totalReceitas = alunos.reduce((sum, aluno) => sum + (aluno.monthlyFee || 0), 0);
+                if(document.getElementById('total-receitas-dashboard')) {
+                    document.getElementById('total-receitas-dashboard').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalReceitas);
+                }
+                
+                // Chart.js implementation omitted for brevity
+            }
+            
+            async function renderAlunos() {
+                contentArea.innerHTML = alunosTemplate;
+                document.getElementById('alunos-table').innerHTML = `<p class="text-center p-4">Carregando alunos...</p>`;
+                const alunos = await getStudentStatus();
+                renderAlunosTable(alunos);
+                document.getElementById('btn-add-aluno').addEventListener('click', () => addAlunoModal.style.display = 'flex');
+            }
+            
+            async function renderRelatorios() {
+                contentArea.innerHTML = relatoriosTemplate;
+                document.getElementById('receitas-table').innerHTML = `<p class="text-center p-4">Carregando relatórios...</p>`;
+                
+                document.getElementById('btn-nova-receita').addEventListener('click', openNovaReceitaModal);
+                
+                const payments = await getRevenueReport();
+                renderRelatoriosTable(payments);
+            }
+
+            // --- Lógica de Navegação ---
+            
+            function switchTab(e) {
+                navTabs.forEach(tab => tab.classList.remove('active'));
+                const clickedTab = e.target;
+                clickedTab.classList.add('active');
+
+                // Styling for active tab... (omitted for brevity)
+                
+                const tabId = clickedTab.id;
+                if (tabId === 'btn-dashboard') renderDashboard();
+                else if (tabId === 'btn-alunos') renderAlunos();
+                else if (tabId === 'btn-relatorios') renderRelatorios();
+            }
+
+            // --- Lógica dos Modais ---
+
+            function setupModals() {
+                // Modal de Adicionar Aluno
+                document.getElementById('close-add-aluno-modal').addEventListener('click', () => addAlunoModal.style.display = 'none');
+                document.getElementById('cancel-add-aluno-modal').addEventListener('click', () => addAlunoModal.style.display = 'none');
+
+                // Modal de Nova Receita
+                document.getElementById('close-nova-receita-modal').addEventListener('click', () => novaReceitaModal.style.display = 'none');
+                document.getElementById('cancel-nova-receita-modal').addEventListener('click', () => novaReceitaModal.style.display = 'none');
+            }
+            
+            async function openNovaReceitaModal() {
+                const studentSelect = document.getElementById('customerId');
+                studentSelect.innerHTML = '<option>Carregando alunos...</option>';
+                const alunos = await getStudentStatus();
+                studentSelect.innerHTML = '<option value="">Selecione...</option>';
+                alunos.forEach(aluno => {
+                    const option = document.createElement('option');
+                    option.value = aluno.id;
+                    option.textContent = aluno.name;
+                    studentSelect.appendChild(option);
+                });
+                novaReceitaModal.style.display = 'flex';
+            }
+
+
+            // --- Lógica de Submissão de Formulários ---
+
+            addStudentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(addStudentForm);
+                const studentData = Object.fromEntries(formData.entries());
+                const result = await createCustomerAndPayment(studentData);
+                
+                if (result && result.payment) {
+                    alert(`Cobrança criada com sucesso! Link: ${result.payment.invoiceUrl}`);
+                    addAlunoModal.style.display = 'none';
+                    addStudentForm.reset();
+                    renderAlunos(); // Atualiza a lista de alunos
+                }
+            });
+
+            addRevenueForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(addRevenueForm);
+                const revenueData = Object.fromEntries(formData.entries());
+                const result = await createRevenue(revenueData);
+
+                if (result && result.payment) {
+                    alert('Nova receita criada com sucesso!');
+                    novaReceitaModal.style.display = 'none';
+                    addRevenueForm.reset();
+                    renderRelatorios(); // Atualiza os relatórios
+                }
+            });
+
+
+            // --- Carga Inicial ---
+            navTabs.forEach(tab => tab.addEventListener('click', switchTab));
+            setupModals();
+            document.getElementById('btn-dashboard').click(); // Inicia no dashboard
+        });
+    </script>
+</body>
+</html>
+
