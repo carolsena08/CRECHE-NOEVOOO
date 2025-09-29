@@ -27,6 +27,38 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #82c29b;
         }
+        /* Simple transition for the mobile menu */
+        #mobile-aside {
+            transition: transform 0.3s ease-in-out;
+        }
+         .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background-color: #59C631;
+            height: 80px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            width: 500%;
+    }
+            .header-title {
+            display: flex; 
+            align-items: center;
+            position: relative; 
+            top: 0.7vh;
+            gap: 10px; 
+            font-size: 1.5rem; 
+            color: 000000; 
+            font-family: 'Kodchasan', sans-serif;
+            }
+
+            .header-title i {
+            margin-right: 15px;
+            font-size: 28px;
+            }
     </style>
     <script>
         // Custom color palette from the image for Tailwind CSS
@@ -50,17 +82,319 @@
 </head>
 <body class="bg-brand-gray text-brand-gray-text">
 
-    <div class="flex flex-col md:flex-row min-h-screen">
-        <!-- Main Content -->
-        <main class="flex-1 p-4 md:p-8">
-            <header class="flex justify-between items-center mb-8">
-                <div class="flex items-center gap-4">
-                     <button class="text-brand-green-dark p-2 rounded-full hover:bg-brand-green-light">
+    <div class="flex min-h-screen">
+    
+        <aside class="w-64 bg-brand-green-dark text-white p-6 hidden lg:flex flex-col justify-between">
+            <style>
+                   /* Estilos Gerais */
+        :root {
+            --orange: #F88C12;
+            --blue: #00A6FF;
+            --green: #59C631;
+            --background: #FCFAFF; 
+            --text-primary: #333;
+            --text-secondary: #6c757d;
+            --sidebar-bg: #FFF4DF;
+            --sidebar-width: 280px; 
+        }
+
+        /* SEU CÓDIGO CSS DA SIDEBAR (INTEGRADO E AJUSTADO PARA O LAYOUT GLOBAL) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background); 
+            min-height: 100vh;
+            display: flex; 
+        }
+
+        .sidebar {
+            width: var(--sidebar-width); 
+            background: linear-gradient(180deg, #FFF4DF 0%, #f8f0e3 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            min-height: 100vh;
+            flex-shrink: 0; 
+            position: fixed; 
+            left: 0;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            padding: 0px 40px;
+            text-align: center;
+            margin-bottom: 25px;
+            margin-top: 30px;
+        }
+        .logo img {
+            max-width: 150px; 
+        }
+
+        .menu {
+            flex: 1; 
+            padding: 20px 18px;
+            overflow-y: auto; 
+        }
+
+        .menu-item {
+            padding: 30px 20px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            overflow: visible;
+            color: black;
+            text-decoration: none; 
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .menu-item span {
+            z-index: 2;
+            font-size: 15px;
+        }
+
+        .menu-item:hover {
+            background-color: #6c757d21;
+        }
+
+        .menu-item::after {
+            padding: 0 10px;
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 20px;
+            height: 2px;
+            width: 0px;
+            transition: width 0.3s ease;
+            border-radius: 1px;
+        }
+
+        .menu-item:hover::after,
+        .menu-item.active::after {
+            width: calc(100% - 40px);
+        }
+
+        /* Cores das barrinhas inferiores dos itens do menu */
+        .menu-item:nth-child(1)::after { background-color: #F4BF27; } 
+        .menu-item:nth-child(2)::after { background-color: #00A6FF; } 
+        .menu-item:nth-child(3)::after { background-color: #9747FF; } 
+        .menu-item:nth-child(4)::after { background-color: #F88C12; } 
+        .menu-item:nth-child(5)::after { background-color: #D22A2A; } 
+        .menu-item:nth-child(6)::after { background-color: #59C631; } 
+
+        .menu-item.active {
+            background-color: rgba(128, 128, 128, 0.356);
+            color: #333;
+            font-weight: 600;
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor; 
+            z-index: 2;
+        }
+
+        .sidebar-footer {
+            padding: 20px 18px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .logout-button {
+            padding: 16px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: #333;
+            width: 100%;
+            text-decoration: none;
+        }
+
+        .logout-button i {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .logout-button:hover {
+            background-color: rgba(210, 42, 42, 0.1); 
+            color: #D22A2A; 
+            font-weight: 600;
+        }
+         @media (max-width: 768px) {
+            :root { --sidebar-width: 70px; }
+            .menu-item span, .logout-button span, .seteeduca { display: none; }
+            .menu-item i, .logout-button i { margin-right: 0; }
+            .sidebar .logo { padding: 0 10px; } 
+            .sidebar .logo img { max-width: 50px; } 
+            .sidebar-footer { padding: 10px 5px; } 
+            .menu { padding: 10px 5px; } 
+            .menu-item { padding: 15px 5px; justify-content: center; } 
+            .menu-item::after { display: none; } 
+            .menu-item.active::before { right: 5px; } 
+            .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
+            .header-title h1 { font-size: 22px; }
+            .header-title p { font-size: 14px; }
+         }
+            </style>
+              <div class="sidebar">
+        <div>
+            <div class="logo">
+                <img src="imagem/logo.png" alt="logo">
+            </div>
+            <div class="menu">
+                <a href="/home" class="menu-item active" onclick="navegarPara('inicio')">
+                    <i class="fas fa-home"></i>
+                    <span>INÍCIO</span>
+                </a>
+                <a href="/criancas-cadastradas" class="menu-item" onclick="navegarPara('cadastro')">
+                    <i class="fas fa-address-card"></i>
+                    <span>CADASTRO</span>
+                </a>
+                <a href="/matricula" class="menu-item" onclick="navegarPara('matricula')">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>MATRÍCULA</span>
+                </a>
+                <a href="/cadastro-prof" class="menu-item" id="professor-link">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>PROFESSOR</span>
+                </a>
+    
+                <a href="/turmas-cadastradas" class="menu-item" onclick="navegarPara('turmas')"> 
+                    <i class="fas fa-users"></i>
+                    <span>TURMA</span>
+                </a>
+                <a href="#" class="menu-item" onclick="navegarPara('financeiro')">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>FINANCEIRO</span>
+                </a>
+            </div>
+        </div>
+        <div>
+         <div class="sidebar-footer">
+                        <a href="#" class="logout-button logout-trigger">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Sair</span>
+                        </a>
+                    </div>
+                </div>
+            </div>  
+        
+
+    <script>
+     
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+        
+                document.querySelectorAll('.menu-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                
+                this.classList.add('active');
+            });
+        });
+    </script>
+        </aside>
+        
+        <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
+
+        <aside id="mobile-aside" class="fixed top-0 left-0 h-full w-64 bg-brand-green-dark text-white p-6 flex-col justify-between z-30 -translate-x-full lg:hidden flex">
+             <div>
+                <div class="mb-10 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                       <span class="bg-white p-2 rounded-lg">
+                           <svg class="h-6 w-6 text-brand-green-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                               <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m-3-1l-3-1m-3 1l-3-1m-3 1l3 1m0-3.364l4.5-1.636m-4.5 1.636L2.25 9m1.5-3l1.5.545m0 0l4.5 1.636m0 0l4.5 1.636m0 0l4.5-1.636m-4.5-1.636L12 3.5m0 0L9.75 3m-3.75 0L12 3.5m0 0l2.25-1.5m-2.25 1.5L9.75 3" />
+                           </svg>
+                       </span>
+                       <h2 class="text-xl font-bold">Gestão Creche</h2>
+                    </div>
+                     <button id="close-menu-btn" class="lg:hidden">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
-                    <h1 class="text-2xl font-bold text-brand-text">Painel FINANCEIRO</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li class="mb-4">
+                            <a href="#" class="flex items-center p-3 rounded-lg bg-brand-text font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-brand-text/50 font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h12v10h-4a2 2 0 00-2 2H4a2 2 0 00-2-2v-4a2 2 0 002-2h12V6H4z" clip-rule="evenodd" /></svg>
+                                Relatórios
+                            </a>
+                        </li>
+                         <li class="mb-4">
+                            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-brand-text/50 font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" /></svg>
+                                Alunos
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div>
+                 <a href="#" class="flex items-center p-3 rounded-lg hover:bg-brand-text/50 font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    Sair
+                </a>
+            </div>
+        </aside>
+
+
+        <main class="flex-1 p-4 md:p-8" style="padding: 100px; width: 1660px; margin-top: -60px;">
+            <header class="flex justify-between items-center mb-8">
+                 <div class="main-content">
+                        <!-- Header -->
+                        <div class="header">
+                        <div class="header-title">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>Painel <b>FINANCEIRO</b></span>      
+                        </div>
+                        <div class="user-profile">
+                        </div>
+                        </div>
+                <div class="flex items-center gap-4">
+                     <button id="open-menu-btn" class="lg:hidden text-brand-green-dark p-2 rounded-full hover:bg-brand-green-light">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                     <!-- Main Content -->
+                   
                 </div>
                 <div class="flex items-center gap-4">
                     <span id="current-date" class="text-sm font-medium text-brand-text hidden sm:block"></span>
@@ -68,7 +402,6 @@
                 </div>
             </header>
 
-            <!-- Navigation Tabs -->
             <nav class="mb-8">
                 <ul class="flex items-center gap-2 md:gap-4 border-b border-gray-200">
                     <li><button id="btn-dashboard" class="nav-tab active">Dashboard</button></li>
@@ -77,15 +410,12 @@
                 </ul>
             </nav>
 
-            <!-- Dynamic Content Area -->
             <div id="content-area">
-                <!-- Content will be loaded here by JavaScript -->
-            </div>
+                </div>
         </main>
     </div>
     
-    <!-- Modal for adding new student/payment -->
-    <div id="add-aluno-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
+    <div id="add-aluno-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-40">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold text-brand-text">Adicionar Novo Aluno/Cliente</h3>
@@ -118,8 +448,7 @@
         </div>
     </div>
 
-    <!-- NOVO MODAL: Modal para adicionar nova receita -->
-    <div id="nova-receita-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
+    <div id="nova-receita-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-40">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold text-brand-text">Nova Receita</h3>
@@ -130,8 +459,7 @@
                     <div>
                         <label for="customerId" class="block text-sm font-medium text-gray-700">Selecione o Aluno</label>
                         <select id="customerId" name="customerId" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
-                           <!-- Opções de alunos serão carregadas aqui -->
-                        </select>
+                           </select>
                     </div>
                     <div>
                         <label for="description" class="block text-sm font-medium text-gray-700">Descrição</label>
@@ -180,7 +508,28 @@
                 dateEl.textContent = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
             }
             
-            const API_URL = 'http://localhost:3000/api';
+            const API_URL = 'http://localhost:3002/api';
+            
+            // --- Lógica do Menu Mobile ---
+            const openMenuBtn = document.getElementById('open-menu-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const mobileAside = document.getElementById('mobile-aside');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+            function openMobileMenu() {
+                mobileMenuOverlay.classList.remove('hidden');
+                mobileAside.classList.remove('-translate-x-full');
+            }
+
+            function closeMobileMenu() {
+                mobileMenuOverlay.classList.add('hidden');
+                mobileAside.classList.add('-translate-x-full');
+            }
+
+            openMenuBtn.addEventListener('click', openMobileMenu);
+            closeMenuBtn.addEventListener('click', closeMobileMenu);
+            mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
 
             // --- Templates ---
             
@@ -498,4 +847,3 @@
     </script>
 </body>
 </html>
-
