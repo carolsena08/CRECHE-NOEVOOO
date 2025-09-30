@@ -45,13 +45,13 @@
             width: 500%;
     }
             .header-title {
-            display: flex; 
+            display: flex;
             align-items: center;
-            position: relative; 
+            position: relative;
             top: 0.7vh;
-            gap: 10px; 
-            font-size: 1.5rem; 
-            color: 000000; 
+            gap: 10px;
+            font-size: 1.5rem;
+            color: 000000;
             font-family: 'Kodchasan', sans-serif;
             }
 
@@ -59,6 +59,26 @@
             margin-right: 15px;
             font-size: 28px;
             }
+        /* --- CÓDIGO ADICIONADO --- */
+        .nav-tab {
+            padding: 10px 16px;
+            border-bottom: 3px solid transparent; /* Cria espaço para a borda sem empurrar o conteúdo */
+            transition: all 0.3s ease-in-out;
+            font-weight: 500;
+            color: #8A8A8A; /* Cor padrão do texto */
+        }
+
+        .nav-tab:hover {
+            color: #2E6B46; /* Cor do texto ao passar o mouse */
+            background-color: #E2F5EA; /* Fundo suave ao passar o mouse */
+        }
+
+        .nav-tab.active {
+            font-weight: 700; /* Deixa o texto em negrito */
+            color: #3D8C5B; /* Cor do texto quando ativo */
+            border-bottom-color: #3D8C5B; /* Borda inferior que cria o efeito "sobreado" */
+        }
+        /* --- FIM DO CÓDIGO ADICIONADO --- */
     </style>
     <script>
         // Custom color palette from the image for Tailwind CSS
@@ -91,11 +111,11 @@
             --orange: #F88C12;
             --blue: #00A6FF;
             --green: #59C631;
-            --background: #FCFAFF; 
+            --background: #FCFAFF;
             --text-primary: #333;
             --text-secondary: #6c757d;
             --sidebar-bg: #FFF4DF;
-            --sidebar-width: 280px; 
+            --sidebar-width: 280px;
         }
 
         /* SEU CÓDIGO CSS DA SIDEBAR (INTEGRADO E AJUSTADO PARA O LAYOUT GLOBAL) */
@@ -107,21 +127,21 @@
         }
         
         body {
-            background-color: var(--background); 
+            background-color: var(--background);
             min-height: 100vh;
-            display: flex; 
+            display: flex;
         }
 
         .sidebar {
-            width: var(--sidebar-width); 
+            width: var(--sidebar-width);
             background: linear-gradient(180deg, #FFF4DF 0%, #f8f0e3 100%);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
             min-height: 100vh;
-            flex-shrink: 0; 
-            position: fixed; 
+            flex-shrink: 0;
+            position: fixed;
             left: 0;
             top: 0;
             z-index: 1000;
@@ -134,13 +154,13 @@
             margin-top: 30px;
         }
         .logo img {
-            max-width: 150px; 
+            max-width: 150px;
         }
 
         .menu {
-            flex: 1; 
+            flex: 1;
             padding: 20px 18px;
-            overflow-y: auto; 
+            overflow-y: auto;
         }
 
         .menu-item {
@@ -155,7 +175,7 @@
             font-weight: 500;
             overflow: visible;
             color: black;
-            text-decoration: none; 
+            text-decoration: none;
         }
 
         .menu-item i {
@@ -193,12 +213,12 @@
         }
 
         /* Cores das barrinhas inferiores dos itens do menu */
-        .menu-item:nth-child(1)::after { background-color: #F4BF27; } 
-        .menu-item:nth-child(2)::after { background-color: #00A6FF; } 
-        .menu-item:nth-child(3)::after { background-color: #9747FF; } 
-        .menu-item:nth-child(4)::after { background-color: #F88C12; } 
-        .menu-item:nth-child(5)::after { background-color: #D22A2A; } 
-        .menu-item:nth-child(6)::after { background-color: #59C631; } 
+        .menu-item:nth-child(1)::after { background-color: #F4BF27; }
+        .menu-item:nth-child(2)::after { background-color: #00A6FF; }
+        .menu-item:nth-child(3)::after { background-color: #9747FF; }
+        .menu-item:nth-child(4)::after { background-color: #F88C12; }
+        .menu-item:nth-child(5)::after { background-color: #D22A2A; }
+        .menu-item:nth-child(6)::after { background-color: #59C631; }
 
         .menu-item.active {
             background-color: rgba(128, 128, 128, 0.356);
@@ -215,7 +235,7 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: currentColor; 
+            background-color: currentColor;
             z-index: 2;
         }
 
@@ -245,21 +265,21 @@
         }
 
         .logout-button:hover {
-            background-color: rgba(210, 42, 42, 0.1); 
-            color: #D22A2A; 
+            background-color: rgba(210, 42, 42, 0.1);
+            color: #D22A2A;
             font-weight: 600;
         }
          @media (max-width: 768px) {
             :root { --sidebar-width: 70px; }
             .menu-item span, .logout-button span, .seteeduca { display: none; }
             .menu-item i, .logout-button i { margin-right: 0; }
-            .sidebar .logo { padding: 0 10px; } 
-            .sidebar .logo img { max-width: 50px; } 
-            .sidebar-footer { padding: 10px 5px; } 
-            .menu { padding: 10px 5px; } 
-            .menu-item { padding: 15px 5px; justify-content: center; } 
-            .menu-item::after { display: none; } 
-            .menu-item.active::before { right: 5px; } 
+            .sidebar .logo { padding: 0 10px; }
+            .sidebar .logo img { max-width: 50px; }
+            .sidebar-footer { padding: 10px 5px; }
+            .menu { padding: 10px 5px; }
+            .menu-item { padding: 15px 5px; justify-content: center; }
+            .menu-item::after { display: none; }
+            .menu-item.active::before { right: 5px; }
             .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
             .header-title h1 { font-size: 22px; }
             .header-title p { font-size: 14px; }
@@ -288,7 +308,7 @@
                     <span>PROFESSOR</span>
                 </a>
     
-                <a href="/turmas-cadastradas" class="menu-item" onclick="navegarPara('turmas')"> 
+                <a href="/turmas-cadastradas" class="menu-item" onclick="navegarPara('turmas')">
                     <i class="fas fa-users"></i>
                     <span>TURMA</span>
                 </a>
@@ -375,34 +395,31 @@
         </aside>
 
 
-        <main class="flex-1 p-4 md:p-8" style="padding: 100px; width: 1660px; margin-top: -60px;">
-            <header class="flex justify-between items-center mb-8">
-                 <div class="main-content">
-                        <!-- Header -->
-                        <div class="header">
-                        <div class="header-title">
-                            <i class="fas fa-dollar-sign"></i>
-                            <span>Painel <b>FINANCEIRO</b></span>      
-                        </div>
-                        <div class="user-profile">
-                        </div>
-                        </div>
+        <div class="main-content flex-1 flex flex-col" style="margin-left: 25px; display: flex; width: 1630px;">
+            <header class="bg-brand-green-header text-brand-text p-4 md:p-5 flex justify-between items-center w-full shadow-md" style="background-color: #59C631;">
                 <div class="flex items-center gap-4">
-                     <button id="open-menu-btn" class="lg:hidden text-brand-green-dark p-2 rounded-full hover:bg-brand-green-light">
+                     <button id="open-menu-btn" class="lg:hidden text-brand-text p-2 rounded-full hover:bg-black/10">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                         </svg>
                     </button>
-                     <!-- Main Content -->
-                   
+
+                
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-sack-dollar text-3xl"></i>
+                        <h1 class="text-2xl uppercase" >
+                            <span class="font-normal">painel</span>
+                            <span class="font-bold">Financeiro</span>
+                        </h1>
+                    </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <span id="current-date" class="text-sm font-medium text-brand-text hidden sm:block"></span>
-                    <img src="https://placehold.co/40x40/A8D5BA/2E6B46?text=A" alt="Avatar do Usuário" class="w-10 h-10 rounded-full">
+                    <span id="current-date" class="text-sm font-medium hidden sm:block"></span>
+                    <img src="https://placehold.co/40x40/E2F5EA/3D8C5B?text=U" alt="Avatar do Usuário" class="w-10 h-10 rounded-full">
                 </div>
             </header>
 
-            <nav class="mb-8">
+            <nav class="mb-8" style="margin-top:40px; font-size: 30px; display: flex; margin-left: 40px;">
                 <ul class="flex items-center gap-2 md:gap-4 border-b border-gray-200">
                     <li><button id="btn-dashboard" class="nav-tab active">Dashboard</button></li>
                     <li><button id="btn-relatorios" class="nav-tab">Relatórios</button></li>
@@ -614,7 +631,7 @@
                         return fetchWithRetry(url, options, retries - 1, delay * 2);
                     } else {
                         console.error("Falha na requisição:", error);
-                        alert(error.message); 
+                        alert(error.message);
                         return null;
                     }
                 }
