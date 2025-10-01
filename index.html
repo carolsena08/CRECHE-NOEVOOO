@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -104,8 +107,8 @@
 
     <div class="flex min-h-screen">
     
-        <aside class="w-64 bg-brand-green-dark text-white p-6 hidden lg:flex flex-col justify-between">
-            <style>
+       <aside class="w-64 bg-brand-green-dark text-white p-6 hidden lg:flex flex-col justify-between">
+        <style>
                    /* Estilos Gerais */
         :root {
             --orange: #F88C12;
@@ -118,6 +121,7 @@
             --sidebar-width: 280px;
         }
 
+
         /* SEU CÓDIGO CSS DA SIDEBAR (INTEGRADO E AJUSTADO PARA O LAYOUT GLOBAL) */
         * {
             margin: 0;
@@ -125,12 +129,13 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+       
         body {
             background-color: var(--background);
             min-height: 100vh;
             display: flex;
         }
+
 
         .sidebar {
             width: var(--sidebar-width);
@@ -147,6 +152,7 @@
             z-index: 1000;
         }
 
+
         .logo {
             padding: 0px 40px;
             text-align: center;
@@ -157,11 +163,13 @@
             max-width: 150px;
         }
 
+
         .menu {
             flex: 1;
             padding: 20px 18px;
             overflow-y: auto;
         }
+
 
         .menu-item {
             padding: 30px 20px;
@@ -178,6 +186,7 @@
             text-decoration: none;
         }
 
+
         .menu-item i {
             margin-right: 15px;
             font-size: 18px;
@@ -186,14 +195,17 @@
             z-index: 2;
         }
 
+
         .menu-item span {
             z-index: 2;
             font-size: 15px;
         }
 
+
         .menu-item:hover {
             background-color: #6c757d21;
         }
+
 
         .menu-item::after {
             padding: 0 10px;
@@ -207,10 +219,12 @@
             border-radius: 1px;
         }
 
+
         .menu-item:hover::after,
         .menu-item.active::after {
             width: calc(100% - 40px);
         }
+
 
         /* Cores das barrinhas inferiores dos itens do menu */
         .menu-item:nth-child(1)::after { background-color: #F4BF27; }
@@ -220,11 +234,13 @@
         .menu-item:nth-child(5)::after { background-color: #D22A2A; }
         .menu-item:nth-child(6)::after { background-color: #59C631; }
 
+
         .menu-item.active {
             background-color: rgba(128, 128, 128, 0.356);
             color: #333;
             font-weight: 600;
         }
+
 
         .menu-item.active::before {
             content: '';
@@ -239,11 +255,12 @@
             z-index: 2;
         }
 
+
         .sidebar-footer {
             padding: 20px 18px;
             border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
+       
         .logout-button {
             padding: 16px 20px;
             border-radius: 8px;
@@ -257,12 +274,14 @@
             text-decoration: none;
         }
 
+
         .logout-button i {
             margin-right: 15px;
             font-size: 18px;
             width: 24px;
             text-align: center;
         }
+
 
         .logout-button:hover {
             background-color: rgba(210, 42, 42, 0.1);
@@ -281,7 +300,7 @@
             .menu-item::after { display: none; }
             .menu-item.active::before { right: 5px; }
             .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
-            .header-title h1 { font-size: 22px; }
+            .header-title h1 { font-size: 28px; }
             .header-title p { font-size: 14px; }
          }
             </style>
@@ -307,7 +326,7 @@
                     <i class="fas fa-chalkboard-teacher"></i>
                     <span>PROFESSOR</span>
                 </a>
-    
+   
                 <a href="/turmas-cadastradas" class="menu-item" onclick="navegarPara('turmas')">
                     <i class="fas fa-users"></i>
                     <span>TURMA</span>
@@ -327,22 +346,25 @@
                     </div>
                 </div>
             </div>  
-        
+       
+
 
     <script>
      
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', function() {
-        
+       
                 document.querySelectorAll('.menu-item').forEach(i => {
                     i.classList.remove('active');
                 });
-                
+               
                 this.classList.add('active');
             });
         });
     </script>
         </aside>
+
+
         
         <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
 
@@ -367,13 +389,13 @@
                     <ul>
                         <li class="mb-4">
                             <a href="#" class="flex items-center p-3 rounded-lg bg-brand-text font-medium">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
                                 Dashboard
                             </a>
                         </li>
                         <li class="mb-4">
                             <a href="#" class="flex items-center p-3 rounded-lg hover:bg-brand-text/50 font-medium">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h12v10h-4a2 2 0 00-2 2H4a2 2 0 00-2-2v-4a2 2 0 002-2h12V6H4z" clip-rule="evenodd" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h12v10h-4a2 2 0 00-2 2H4a2 2 0 00-2-2v-4a2 2 0 002-2h12V6H4z" clip-rule="evenodd" /></svg> 
                                 Relatórios
                             </a>
                         </li>
@@ -405,21 +427,22 @@
                     </button>
 
                 
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-sack-dollar text-3xl"></i>
-                        <h1 class="text-2xl uppercase" >
-                            <span class="font-normal">painel</span>
-                            <span class="font-bold">Financeiro</span>
-                        </h1>
-                    </div>
+             <div class="flex items-center gap-3">
+
+                <h1 class="text-2xl flex items-center gap-2">
+                    <i class="fas fa-dollar-sign text-white"></i>
+                    <span style="color: white;">Painel <b>FINANCEIRO</b> </span>
+                </h1>
+
+            </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <span id="current-date" class="text-sm font-medium hidden sm:block"></span>
-                    <img src="https://placehold.co/40x40/E2F5EA/3D8C5B?text=U" alt="Avatar do Usuário" class="w-10 h-10 rounded-full">
+                    <span id="current-date" class="text-sm font-medium hidden sm:block" style="color: white; font-size: 20px;"></span>
+                    <i class="fa-solid fa-calendar-days text-white"></i>
                 </div>
             </header>
 
-            <nav class="mb-8" style="margin-top:40px; font-size: 30px; display: flex; margin-left: 40px;">
+            <nav class="mb-8 mt-6 md:ml-15">
                 <ul class="flex items-center gap-2 md:gap-4 border-b border-gray-200">
                     <li><button id="btn-dashboard" class="nav-tab active">Dashboard</button></li>
                     <li><button id="btn-relatorios" class="nav-tab">Relatórios</button></li>
