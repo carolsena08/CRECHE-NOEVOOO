@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Financeiro - Gestão de Creche</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #a8d5ba; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #82c29b; }
+        #mobile-aside { transition: transform 0.3s ease-in-out; }
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        .nav-tab {
+            padding: 10px 16px; border-bottom: 3px solid transparent;
+            transition: all 0.3s ease-in-out; font-weight: 500; color: #8A8A8A;
+        }
+        .nav-tab:hover { color: #2E6B46; background-color: #E2F5EA; }
+        .nav-tab.active {
+            font-weight: 700; color: #3D8C5B; border-bottom-color: #3D8C5B;
+        }
+        .sidebar { /* Estilos da sua sidebar original */
+            width: 280px; background: linear-gradient(180deg, #FFF4DF 0%, #f8f0e3 100%);
+            display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1); min-height: 100vh;
+            flex-shrink: 0; position: fixed; left: 0; top: 0; z-index: 1000;
+        }
+        .logo { padding: 0px 40px; text-align: center; margin-bottom: 25px; margin-top: 30px; }
+        .logo img { max-width: 150px; }
+        .menu { flex: 1; padding: 20px 18px; overflow-y: auto; }
+        .menu-item {
+            padding: 16px 20px; margin-bottom: 6px; border-radius: 8px; cursor: pointer;
+            transition: all 0.3s ease; position: relative; display: flex; align-items: center;
+            font-weight: 500; color: black; text-decoration: none;
+        }
+        .menu-item i { margin-right: 15px; font-size: 18px; width: 24px; text-align: center; }
+        .menu-item:hover { background-color: #6c757d21; }
+        .menu-item.active { background-color: rgba(128, 128, 128, 0.1); color: #333; font-weight: 600; }
+        .sidebar-footer { padding: 20px 18px; border-top: 1px solid rgba(0, 0, 0, 0.1); }
+        .logout-button {
+            padding: 16px 20px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; font-weight: 500; color: #333;
+            width: 100%; text-decoration: none;
+        }
+        .logout-button i { margin-right: 15px; font-size: 18px; width: 24px; text-align: center; }
+        .logout-button:hover { background-color: rgba(210, 42, 42, 0.1); color: #D22A2A; font-weight: 600; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: {
+                'brand-green-light': '#E2F5EA', 'brand-green-medium': '#A8D5BA',
+                'brand-green-dark': '#3D8C5B', 'brand-text': '#2E6B46',
+                'brand-gray': '#F7F8FA', 'brand-gray-text': '#8A8A8A',
+                'brand-red': '#FF6B6B', 'brand-blue': '#4A90E2',
+            }}}
+        }
+    </script>
+</head>
+<body class="bg-brand-gray text-brand-gray-text">
+
+    <div class="flex min-h-screen">
+        <aside class="sidebar hidden lg:flex">
+             <div>
+                <div class="logo">
+                    <img src="https://i.ibb.co/L6xbf11/logo-placeholder.png" alt="logo">
+                </div>
+                <div class="menu">
+                    <a href="#" class="menu-item active">
+                        <i class="fas fa-home"></i><span>INÍCIO</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-address-card"></i><span>CADASTRO</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-user-graduate"></i><span>MATRÍCULA</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-chalkboard-teacher"></i><span>PROFESSOR</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-users"></i><span>TURMA</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-dollar-sign"></i><span>FINANCEIRO</span>
+                    </a>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <a href="#" class="logout-button">
+                    <i class="fa-solid fa-right-from-bracket"></i><span>Sair</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content" style="margin-left: 280px; width: calc(100% - 280px);">
+            <header class="bg-brand-green-header text-brand-text p-4 md:p-5 flex justify-between items-center w-full shadow-md" style="background-color: #59C631;">
+                <div class="flex items-center gap-4">
+                    <h1 class="text-2xl flex items-center gap-2">
+                        <i class="fas fa-dollar-sign text-white"></i>
+                        <span style="color: white;">Painel <b>FINANCEIRO</b></span>
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="current-date" class="text-sm font-medium hidden sm:block" style="color: white; font-size: 20px;"></span>
+                    <i class="fa-solid fa-calendar-days text-white"></i>
+                </div>
+            </header>
+
+            <nav class="mb-8 mt-6 md:ml-10">
+                <ul class="flex items-center gap-2 md:gap-4 border-b border-gray-200">
+                    <li><button id="btn-dashboard" class="nav-tab active">Dashboard</button></li>
+                    <li><button id="btn-relatorios" class="nav-tab">Relatórios</button></li>
+                    <li><button id="btn-alunos" class="nav-tab">Alunos</button></li>
+                </ul>
+            </nav>
+
+            <div id="content-area" class="p-4 md:p-6">
+                </div>
+        </main>
+    </div>
+    
+    <div id="nova-receita-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-40">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-title" class="text-xl font-bold text-brand-text">Novo Lançamento</h3>
+                <button id="close-nova-receita-modal" class="text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+            <form id="add-revenue-form">
+                <div class="space-y-4">
+                    <div>
+                        <label for="transaction-type" class="block text-sm font-medium text-gray-700">Tipo de Lançamento</label>
+                        <select id="transaction-type" name="transaction-type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                            <option value="Receita" selected>Receita</option>
+                            <option value="Despesa">Despesa</option>
+                         </select>
+                    </div>
+
+                    <div id="customer-field">
+                        <label for="customerId" class="block text-sm font-medium text-gray-700">Selecione o Aluno</label>
+                        <select id="customerId" name="customerId" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                           </select>
+                    </div>
+
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700">Categoria</label>
+                        <select id="category" name="category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                           </select>
+                    </div>
+                    
+                    <div id="expense-subcategory-field" class="hidden">
+                        <label for="expense-subcategory" class="block text-sm font-medium text-gray-700">Tipo de Despesa</label>
+                        <select id="expense-subcategory" name="expense-subcategory" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Fraldas">Fraldas</option>
+                            <option value="Conta de Luz">Conta de Luz</option>
+                            <option value="Conta de Água">Conta de Água</option>
+                            <option value="Internet">Internet</option>
+                            <option value="Material Escolar">Material Escolar</option>
+                            <option value="Outras Despesas">Outras Despesas</option>
+                         </select>
+                    </div>
+
+                    <div id="professor-field" class="hidden">
+                        <label for="professorId" class="block text-sm font-medium text-gray-700">Selecione o Professor</label>
+                        <select id="professorId" name="professorId" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                            <option value="1">Prof.ª Ana Silva</option>
+                            <option value="2">Prof. Carlos Souza</option>
+                            <option value="3">Prof.ª Beatriz Lima</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700">Descrição</label>
+                        <input type="text" id="description" name="description" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                     <div>
+                        <label for="revenue-value" class="block text-sm font-medium text-gray-700">Valor</label>
+                        <input type="number" step="0.01" id="revenue-value" name="value" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                    <div>
+                        <label for="revenue-dueDate" class="block text-sm font-medium text-gray-700">Data</label>
+                        <input type="date" id="revenue-dueDate" name="dueDate" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end gap-4">
+                    <button type="button" id="cancel-nova-receita-modal" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">Cancelar</button>
+                    <button type="submit" class="bg-brand-green-dark text-white px-4 py-2 rounded-md hover:bg-brand-text">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentArea = document.getElementById('content-area');
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const dateEl = document.getElementById('current-date');
+            if(dateEl) {
+                dateEl.textContent = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
+            }
+
+            // --- LÓGICA DO FORMULÁRIO DINÂMICO ---
+            const novaReceitaModal = document.getElementById('nova-receita-modal');
+            const transactionTypeSelect = document.getElementById('transaction-type');
+            const categorySelect = document.getElementById('category');
+            const expenseSubcategoryField = document.getElementById('expense-subcategory-field');
+            const customerField = document.getElementById('customer-field');
+            const modalTitle = document.getElementById('modal-title');
+            
+            // NOVO: Referência ao campo de seleção do professor
+            const professorField = document.getElementById('professor-field');
+
+            const revenueCategories = ['Matrícula', 'Mensalidade', 'Outros'];
+            const expenseCategories = ['Despesa Geral', 'Salário']; // Categoria de Despesa inclui Salário
+
+            // Função para atualizar as opções de categoria
+            function updateCategoryOptions(type) {
+                categorySelect.innerHTML = ''; // Limpa as opções atuais
+                const options = type === 'Receita' ? revenueCategories : expenseCategories;
+                options.forEach(optionText => {
+                    const option = document.createElement('option');
+                    option.value = optionText;
+                    option.textContent = optionText;
+                    categorySelect.appendChild(option);
+                });
+            }
+            
+            // NOVA LÓGICA CENTRALIZADA para mostrar/ocultar campos
+            function updateFormFields() {
+                const selectedType = transactionTypeSelect.value;
+                const selectedCategory = categorySelect.value;
+                
+                // Esconde todos os campos condicionais para começar do zero
+                customerField.classList.add('hidden');
+                expenseSubcategoryField.classList.add('hidden');
+                professorField.classList.add('hidden');
+
+                if (selectedType === 'Receita') {
+                    modalTitle.textContent = 'Nova Receita';
+                    customerField.classList.remove('hidden'); // Mostra o campo de aluno para receitas
+                } else { // Caso seja 'Despesa'
+                    modalTitle.textContent = 'Nova Despesa';
+                    
+                    // Verifica a categoria da despesa
+                    if (selectedCategory === 'Salário') {
+                         professorField.classList.remove('hidden'); // Mostra o campo de professor
+                    } else { // Para 'Despesa Geral' ou outras futuras
+                         expenseSubcategoryField.classList.remove('hidden'); // Mostra os tipos de despesa
+                    }
+                }
+            }
+
+            // Evento que monitora a mudança entre "Receita" e "Despesa"
+            transactionTypeSelect.addEventListener('change', function() {
+                updateCategoryOptions(this.value); // Atualiza as categorias disponíveis
+                updateFormFields(); // Atualiza os campos visíveis no formulário
+            });
+            
+            // NOVO: Evento que monitora a mudança de Categoria (para o caso de Despesa)
+            categorySelect.addEventListener('change', updateFormFields);
+
+            // Inicialização do formulário ao carregar a página
+            updateCategoryOptions('Receita');
+            updateFormFields();
+
+
+            // --- RESTANTE DO SEU CÓDIGO JAVASCRIPT ---
+            const relatoriosTemplate = `
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-brand-text text-lg">Relatório de Lançamentos</h3>
+                        <button id="btn-novo-lancamento" class="bg-brand-green-light text-brand-green-dark font-semibold px-4 py-2 rounded-lg text-sm hover:bg-brand-green-medium">Novo Lançamento</button>
+                    </div>
+                    <div id="receitas-table" class="overflow-x-auto"></div>
+                </div>
+            `;
+            
+            async function renderRelatorios() {
+                contentArea.innerHTML = relatoriosTemplate;
+                // Adiciona o listener ao novo botão de lançamento
+                document.getElementById('btn-novo-lancamento').addEventListener('click', () => {
+                    novaReceitaModal.style.display = 'flex';
+                });
+                // ... lógica para carregar a tabela
+            }
+            
+            // --- Carga Inicial ---
+            navTabs.forEach(tab => tab.addEventListener('click', (e) => {
+                 navTabs.forEach(t => t.classList.remove('active'));
+                 e.currentTarget.classList.add('active');
+                 const tabId = e.currentTarget.id;
+                 if (tabId === 'btn-relatorios') renderRelatorios();
+                 // Adicione as outras condições aqui
+            }));
+            
+            document.getElementById('close-nova-receita-modal').addEventListener('click', () => novaReceitaModal.style.display = 'none');
+            document.getElementById('cancel-nova-receita-modal').addEventListener('click', () => novaReceitaModal.style.display = 'none');
+            
+            // Simula o clique inicial para carregar o conteúdo
+             document.getElementById('btn-dashboard').click();
+        });
+    </script>
+</body>
+</html>
