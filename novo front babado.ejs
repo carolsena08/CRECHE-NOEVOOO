@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Financeiro - Gestão de Creche</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #a8d5ba; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #82c29b; }
+        
+        .nav-tab {
+            padding: 10px 16px; border-bottom: 3px solid transparent;
+            transition: all 0.3s ease-in-out; font-weight: 500; color: #8A8A8A;
+        }
+        .nav-tab:hover { color: #2E6B46; }
+        .nav-tab.active {
+            font-weight: 700; color: #3D8C5B; border-bottom-color: #3D8C5B;
+        }
+
+        .sidebar {
+            width: 280px; background: linear-gradient(180deg, #FFF4DF 0%, #f8f0e3 100%);
+            display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1); min-height: 100vh;
+            flex-shrink: 0; position: fixed; left: 0; top: 0; z-index: 1000;
+        }
+        .logo { padding: 0px 40px; text-align: center; margin-bottom: 25px; margin-top: 30px; }
+        .logo img { max-width: 150px; }
+        .menu { flex: 1; padding: 20px 18px; overflow-y: auto; }
+        .menu-item {
+            padding: 16px 20px; margin-bottom: 6px; border-radius: 8px; cursor: pointer;
+            transition: all 0.3s ease; position: relative; display: flex; align-items: center;
+            font-weight: 500; color: black; text-decoration: none;
+        }
+        .menu-item i { margin-right: 15px; font-size: 18px; width: 24px; text-align: center; }
+        .menu-item:hover { background-color: #6c757d21; }
+        .menu-item.active { background-color: rgba(128, 128, 128, 0.1); color: #333; font-weight: 600; }
+        .sidebar-footer { padding: 20px 18px; border-top: 1px solid rgba(0, 0, 0, 0.1); }
+        .logout-button {
+            padding: 16px 20px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; font-weight: 500; color: #333;
+            width: 100%; text-decoration: none;
+        }
+        .logout-button i { margin-right: 15px; font-size: 18px; width: 24px; text-align: center; }
+        .logout-button:hover { background-color: rgba(210, 42, 42, 0.1); color: #D22A2A; font-weight: 600; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: {
+                'brand-green-light': '#E2F5EA', 'brand-green-medium': '#A8D5BA',
+                'brand-green-dark': '#3D8C5B', 'brand-text': '#2E6B46',
+                'brand-gray': '#F7F8FA', 'brand-gray-text': '#8A8A8A',
+                'brand-red': '#FF6B6B', 'brand-blue': '#4A90E2',
+            }}}
+        }
+    </script>
+</head>
+<body class="bg-brand-gray text-brand-gray-text">
+
+    <aside class="sidebar hidden lg:flex">
+         <div>
+            <div class="logo">
+                <img src="https://i.ibb.co/L6xbf11/logo-placeholder.png" alt="logo">
+            </div>
+            <div class="menu">
+                <a href="#" class="menu-item"><i class="fas fa-home"></i><span>INÍCIO</span></a>
+                <a href="#" class="menu-item"><i class="fas fa-address-card"></i><span>CADASTRO</span></a>
+                <a href="#" class="menu-item"><i class="fas fa-user-graduate"></i><span>MATRÍCULA</span></a>
+                <a href="#" class="menu-item"><i class="fas fa-chalkboard-teacher"></i><span>PROFESSOR</span></a>
+                <a href="#" class="menu-item"><i class="fas fa-users"></i><span>TURMA</span></a>
+                <a href="#" class="menu-item active"><i class="fas fa-dollar-sign"></i><span>FINANCEIRO</span></a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <a href="#" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i><span>Sair</span></a>
+        </div>
+    </aside>
+    
+    <div class="flex flex-col flex-1 lg:ml-[280px] min-h-screen">
+        
+        <header class="bg-brand-green-header text-brand-text p-4 md:p-5 flex justify-between items-center w-full shadow-md sticky top-0 z-30" style="background-color: #59C631;">
+            <div class="flex items-center gap-4">
+                <h1 class="text-2xl flex items-center gap-2">
+                    <i class="fas fa-dollar-sign text-white"></i>
+                    <span style="color: white;">Painel <b>FINANCEIRO</b></span>
+                </h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="current-date" class="text-sm font-medium hidden sm:block" style="color: white; font-size: 20px;"></span>
+                <i class="fa-solid fa-calendar-days text-white"></i>
+            </div>
+        </header>
+
+        <main class="flex-1 p-4 md:p-6 lg:p-8 flex flex-col">
+            <nav class="mb-6">
+                <ul class="flex items-center gap-2 md:gap-4 border-b border-gray-200">
+                    <li><button id="btn-dashboard" class="nav-tab active">Visão Geral</button></li>
+                    <li><button id="btn-alunos" class="nav-tab">Situação Alunos</button></li>
+                    <li><button id="btn-relatorios" class="nav-tab">Relatórios</button></li>
+                    <li><button id="btn-historico" class="nav-tab">Histórico</button></li>
+                </ul>
+            </nav>
+            <div id="content-area" class="flex-1"></div>
+        </main>
+    </div>
+
+    <!-- Modal Novo Lançamento -->
+    <div id="nova-receita-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-40">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-brand-text">Novo Lançamento</h3>
+                <button id="close-nova-receita-modal" class="text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+            </div>
+            <form id="add-revenue-form">
+                <div class="space-y-4">
+                    <div>
+                        <label for="transaction-type" class="block text-sm font-medium text-gray-700">Tipo de Lançamento</label>
+                        <select id="transaction-type" name="transaction-type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                            <option value="Receita" selected>Receita</option>
+                            <option value="Despesa">Despesa</option>
+                        </select>
+                    </div>
+                    <div id="customer-field">
+                        <label for="customerId" class="block text-sm font-medium text-gray-700">Selecione o Aluno</label>
+                        <select id="customerId" name="customerId" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium"></select>
+                    </div>
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700">Categoria</label>
+                        <select id="category" name="category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium"></select>
+                    </div>
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700">Descrição</label>
+                        <input type="text" id="description" name="description" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                     <div>
+                        <label for="revenue-value" class="block text-sm font-medium text-gray-700">Valor</label>
+                        <input type="number" step="0.01" id="revenue-value" name="value" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                    <div>
+                        <label for="revenue-dueDate" class="block text-sm font-medium text-gray-700">Data</label>
+                        <input type="date" id="revenue-dueDate" name="date" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-green-medium focus:border-brand-green-medium">
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end gap-4">
+                    <button type="button" id="cancel-nova-receita-modal" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">Cancelar</button>
+                    <button type="submit" class="bg-brand-green-dark text-white px-4 py-2 rounded-md hover:bg-brand-text">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentArea = document.getElementById('content-area');
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const dateEl = document.getElementById('current-date');
+            const novaReceitaModal = document.getElementById('nova-receita-modal');
+            const addRevenueForm = document.getElementById('add-revenue-form');
+
+            if(dateEl) {
+                dateEl.textContent = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
+            }
+            
+            let relatoriosData = [
+                { id: 1, date: '2024-05-01', description: 'Mensalidade - João Silva', category: 'Mensalidade', value: 500.00, type: 'Receita', status: 'ativo' },
+                { id: 2, date: '2024-05-02', description: 'Pagamento de Salário - Prof.ª Ana', category: 'Salários', value: -1500.00, type: 'Despesa', status: 'ativo' },
+                { id: 3, date: '2024-05-03', description: 'Conta de Luz', category: 'Contas', value: -250.00, type: 'Despesa', status: 'ativo' },
+                { id: 4, date: '2024-04-15', description: 'Compra de Material de Limpeza', category: 'Materiais', value: -150.00, type: 'Despesa', status: 'arquivado' },
+                { id: 5, date: '2024-04-01', description: 'Mensalidade - Ana Souza', category: 'Mensalidade', value: 500.00, type: 'Receita', status: 'arquivado' },
+            ];
+
+            const getAlunos = async () => [
+                { id: 1, studentName: 'João Silva', parentName: 'Maria Silva', mensalidade: 550.00, vencimento: '10/06/2024', status: 'pago' },
+                { id: 2, studentName: 'Ana Souza', parentName: 'Carlos Souza', mensalidade: 550.00, vencimento: '10/05/2024', status: 'pendente' },
+                { id: 3, studentName: 'Pedro Costa', parentName: 'Beatriz Costa', mensalidade: 550.00, vencimento: '10/04/2024', status: 'atrasado' },
+            ];
+            
+            const dashboardTemplate = `
+                <div class="space-y-8 h-full flex flex-col">
+                    <section>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-lg font-semibold text-gray-500">Receita Total (Mês)</h3><p class="text-3xl font-bold text-green-600">R$ 15.250,00</p></div>
+                            <div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-lg font-semibold text-gray-500">Despesas Totais (Mês)</h3><p class="text-3xl font-bold text-red-600">R$ 8.980,00</p></div>
+                            <div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-lg font-semibold text-gray-500">Lucro Líquido (Mês)</h3><p class="text-3xl font-bold text-brand-text">R$ 6.270,00</p></div>
+                        </div>
+                    </section>
+                    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1">
+                        <div class="bg-white p-6 rounded-lg shadow-sm flex flex-col"><h3 class="text-xl font-semibold mb-4 text-brand-text">Fluxo de Caixa Mensal</h3><div class="relative flex-1 h-64 md:h-auto"><canvas id="cashflow-chart"></canvas></div></div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm flex flex-col"><h3 class="text-xl font-semibold mb-4 text-brand-text">Status das Mensalidades</h3><div class="relative flex-1 h-64 md:h-auto"><canvas id="status-chart"></canvas></div></div>
+                    </section>
+                </div>`;
+            const alunosTemplate = `
+                <div class="bg-white p-6 rounded-lg shadow-sm h-full">
+                    <h2 class="text-2xl font-bold mb-4 text-brand-text">Situação Financeira dos Alunos</h2>
+                    <div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-gray-100"><tr><th class="p-3">Nome do Aluno</th><th class="p-3">Responsável</th><th class="p-3">Mensalidade</th><th class="p-3">Vencimento</th><th class="p-3">Status da Mensalidade</th></tr></thead><tbody id="alunos-table-body"></tbody></table></div>
+                </div>`;
+            const relatoriosTemplate = `
+                <div class="bg-white p-6 rounded-lg shadow-sm h-full">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-brand-text">Relatório Financeiro Detalhado</h2>
+                        <button id="btn-novo-lancamento" class="bg-brand-green-dark text-white px-4 py-2 rounded-md hover:bg-brand-text flex items-center gap-2"><i class="fas fa-plus"></i>Novo Lançamento</button>
+                    </div>
+                    <div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-gray-100"><tr><th class="p-3">Data</th><th class="p-3">Descrição</th><th class="p-3">Categoria</th><th class="p-3">Valor</th><th class="p-3">Tipo</th><th class="p-3">Ações</th></tr></thead><tbody id="relatorios-table-body"></tbody></table></div>
+                </div>`;
+            const historicoTemplate = `
+                <div class="bg-white p-6 rounded-lg shadow-sm h-full">
+                    <h2 class="text-2xl font-bold mb-4 text-brand-text">Histórico de Relatórios Arquivados</h2>
+                    <div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-gray-100"><tr><th class="p-3">Data</th><th class="p-3">Descrição</th><th class="p-3">Categoria</th><th class="p-3">Valor</th><th class="p-3">Tipo</th><th class="p-3">Ações</th></tr></thead><tbody id="historico-table-body"></tbody></table></div>
+                </div>`;
+
+            function setupCharts() { /* ... Chart.js setup ... */ }
+            
+            async function renderAlunos() {
+                const alunos = await getAlunos();
+                const tbody = document.getElementById('alunos-table-body');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                const statusClasses = {
+                    pago: 'bg-green-100 text-green-700',
+                    pendente: 'bg-yellow-100 text-yellow-700',
+                    atrasado: 'bg-red-100 text-red-700',
+                };
+                alunos.forEach(aluno => {
+                    const row = `<tr>
+                        <td class="p-3">${aluno.studentName}</td>
+                        <td class="p-3">${aluno.parentName}</td>
+                        <td class="p-3">R$ ${aluno.mensalidade.toFixed(2).replace('.', ',')}</td>
+                        <td class="p-3">${aluno.vencimento}</td>
+                        <td class="p-3"><span class="px-2 py-1 rounded-full text-sm font-medium ${statusClasses[aluno.status]}">${aluno.status.charAt(0).toUpperCase() + aluno.status.slice(1)}</span></td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+            }
+
+            function renderRelatorios(filterStatus = 'ativo') {
+                const relatorios = relatoriosData.filter(r => r.status === filterStatus);
+                const tbodyId = filterStatus === 'ativo' ? 'relatorios-table-body' : 'historico-table-body';
+                const tbody = document.getElementById(tbodyId);
+                if(!tbody) return;
+                tbody.innerHTML = '';
+                relatorios.forEach(item => {
+                    const valueClass = item.type === 'Receita' ? 'text-green-600' : 'text-red-600';
+                    const actionButton = filterStatus === 'ativo'
+                        ? `<button data-id="${item.id}" class="archive-btn text-yellow-600 hover:underline">Arquivar</button>`
+                        : `<button data-id="${item.id}" class="unarchive-btn text-green-600 hover:underline">Reativar</button>`;
+
+                    const row = `<tr>
+                        <td class="p-3">${new Date(item.date).toLocaleDateString('pt-BR')}</td>
+                        <td class="p-3">${item.description}</td>
+                        <td class="p-3">${item.category}</td>
+                        <td class="p-3 font-medium ${valueClass}">R$ ${Math.abs(item.value).toFixed(2).replace('.',',')}</td>
+                        <td class="p-3">${item.type}</td>
+                        <td class="p-3">${actionButton}</td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+            }
+            
+            async function populateSelects() {
+                const alunos = await getAlunos();
+                const customerSelect = document.getElementById('customerId');
+                customerSelect.innerHTML = alunos.map(a => `<option value="${a.id}">${a.studentName}</option>`).join('');
+            }
+            
+            function updateFormBasedOnType() {
+                const type = document.getElementById('transaction-type').value;
+                const categorySelect = document.getElementById('category');
+                const customerField = document.getElementById('customer-field');
+                
+                const revenueCategories = ['Mensalidade', 'Matrícula', 'Outras Receitas'];
+                const expenseCategories = ['Salários', 'Contas', 'Materiais', 'Alimentação', 'Outras Despesas'];
+
+                if (type === 'Receita') {
+                    categorySelect.innerHTML = revenueCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+                    customerField.style.display = 'block';
+                } else { // Despesa
+                    categorySelect.innerHTML = expenseCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+                    customerField.style.display = 'none';
+                }
+            }
+            
+            function handleReportAction(e) {
+                const target = e.target;
+                if (!target.dataset.id) return;
+                const reportId = parseInt(target.dataset.id);
+                const report = relatoriosData.find(r => r.id === reportId);
+                if (!report) return;
+
+                if (target.classList.contains('archive-btn')) {
+                    report.status = 'arquivado';
+                    renderContent('btn-relatorios');
+                }
+
+                if (target.classList.contains('unarchive-btn')) {
+                    report.status = 'ativo';
+                    renderContent('btn-historico');
+                }
+            }
+
+            function renderContent(tabId) {
+                contentArea.removeEventListener('click', handleReportAction);
+                if (tabId === 'btn-dashboard') {
+                    contentArea.innerHTML = dashboardTemplate;
+                    setupCharts();
+                } else if (tabId === 'btn-alunos') {
+                    contentArea.innerHTML = alunosTemplate;
+                    renderAlunos();
+                } else if (tabId === 'btn-relatorios') {
+                    contentArea.innerHTML = relatoriosTemplate;
+                    renderRelatorios('ativo');
+                    document.getElementById('btn-novo-lancamento').addEventListener('click', () => {
+                        addRevenueForm.reset();
+                        updateFormBasedOnType();
+                        novaReceitaModal.style.display = 'flex';
+                    });
+                    contentArea.addEventListener('click', handleReportAction);
+                } else if (tabId === 'btn-historico') {
+                    contentArea.innerHTML = historicoTemplate;
+                    renderRelatorios('arquivado');
+                    contentArea.addEventListener('click', handleReportAction);
+                }
+            }
+
+            // --- Event Listeners & Initialization ---
+            document.getElementById('close-nova-receita-modal').addEventListener('click', () => novaReceitaModal.style.display = 'none');
+            document.getElementById('cancel-nova-receita-modal').addEventListener('click', () => novaReceitaModal.style.display = 'none');
+            document.getElementById('transaction-type').addEventListener('change', updateFormBasedOnType);
+
+            addRevenueForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(addRevenueForm);
+                const data = Object.fromEntries(formData.entries());
+                
+                const newEntry = {
+                    id: Date.now(),
+                    date: data.date,
+                    description: data.description,
+                    category: data.category,
+                    value: parseFloat(data.value),
+                    type: data['transaction-type'],
+                    status: 'ativo'
+                };
+                if (newEntry.type === 'Despesa') {
+                    newEntry.value = -Math.abs(newEntry.value);
+                }
+                
+                relatoriosData.unshift(newEntry);
+                novaReceitaModal.style.display = 'none';
+                renderRelatorios('ativo');
+            });
+            
+            navTabs.forEach(tab => tab.addEventListener('click', (e) => {
+                 navTabs.forEach(t => t.classList.remove('active'));
+                 e.currentTarget.classList.add('active');
+                 renderContent(e.currentTarget.id);
+            }));
+            
+            populateSelects();
+            document.getElementById('btn-dashboard').click();
+        });
+    </script>
+</body>
+</html>
+
